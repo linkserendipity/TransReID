@@ -38,7 +38,7 @@ def do_train(cfg,
     acc_meter = AverageMeter()
 
     evaluator = R1_mAP_eval(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM)
-    scaler = amp.GradScaler()
+    scaler = amp.GradScaler() # ! amp
     # train
     for epoch in range(1, epochs + 1):
         start_time = time.time()
@@ -63,7 +63,7 @@ def do_train(cfg,
             scaler.step(optimizer)
             scaler.update()
 
-            if 'center' in cfg.MODEL.METRIC_LOSS_TYPE:
+            if 'center' in cfg.MODEL.METRIC_LOSS_TYPE: # @ 'triplet'??????
                 for param in center_criterion.parameters():
                     param.grad.data *= (1. / cfg.SOLVER.CENTER_LOSS_WEIGHT)
                 scaler.step(optimizer_center)
